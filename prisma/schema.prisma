@@ -20,11 +20,14 @@ model User {
   divisionId String
   division   Division  @relation(fields: [divisionId], references: [id], onDelete: Cascade)
 
-  roles       Roles[]
-  bankAccount BankAccount[]
-  submissions submission[]
-  approvals   Approval[]        @relation("UserApprovals")
-  histories   ApprovalHistory[]
+  roles         Roles[]
+  bankAccount   BankAccount[]
+  submissions   submission[]
+  approvals     Approval[]        @relation("UserApprovals")
+  histories     ApprovalHistory[]
+  hirarkyId     String?
+  hirarky       Hirarky?          @relation(fields: [hirarkyId], references: [id], onDelete: SetNull)
+  hirarkyLevels HirarkyLevel[]    @relation("HirarkyLevelApprover")
 }
 
 model BankAccount {
@@ -67,9 +70,11 @@ model submission {
   activity    String
   description String
   status      String?
+  typeId      String?
 
   submissionDetail submissionDetail[]
   approval         Approval[]
+  type             typeSubmission?     @relation(fields: [typeId], references: [id], onDelete: Cascade)
   user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   project          projectCode        @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
@@ -97,11 +102,12 @@ model categorySubmission {
 }
 
 model typeSubmission {
-  id          String    @id @default(uuid())
+  id          String       @id @default(uuid())
   name        String
   code        String?
   description String?
-  createdAt   DateTime? @default(now())
+  createdAt   DateTime?    @default(now())
+  submission  submission[]
 }
 
 model projectCode {
@@ -119,7 +125,7 @@ model Approval {
   submissionId String
   submission   submission        @relation(fields: [submissionId], references: [id], onDelete: Cascade)
   sequence     Int
-  requiredRole String
+  requiredRole String 
   status       String            @default("PENDING")
   approverId   String?
   approver     User?             @relation("UserApprovals", fields: [approverId], references: [id], onDelete: Cascade)
@@ -139,4 +145,24 @@ model ApprovalHistory {
   newStatus  String
   comment    String?
   createdAt  DateTime @default(now())
+}
+
+model Hirarky {
+  id          String         @id @default(uuid())
+  name        String
+  description String?
+  levels      HirarkyLevel[]
+  users       User[]
+  createdAt   DateTime       @default(now())
+}
+
+model HirarkyLevel {
+  id           String   @id @default(uuid())
+  hirarkyId    String
+  hirarky      Hirarky  @relation(fields: [hirarkyId], references: [id], onDelete: Cascade)
+  sequence     Int
+  requiredRole String
+  approverId   String?
+  approver     User?    @relation("HirarkyLevelApprover", fields: [approverId], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
 }
