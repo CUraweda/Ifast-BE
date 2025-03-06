@@ -4,7 +4,8 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "nodemon src/index.js",
+    "db:seed": "node prisma/seeders/seed.js"
   },
   "keywords": [],
   "author": "https://github.com/Razdan12",
