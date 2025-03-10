@@ -9,11 +9,13 @@ generator client {
 
 model User {
   id         String    @id @default(uuid())
+  fullName   String?
   email      String    @unique
   password   String
   phoneWA    String?
   nik        Int
   signature  String?
+  status     Boolean? @default(true)
   apiToken   String?   @unique
   isVerified Boolean   @default(false)
   createdAt  DateTime? @default(now())
@@ -74,7 +76,7 @@ model submission {
 
   submissionDetail submissionDetail[]
   approval         Approval[]
-  type             typeSubmission?     @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  type             typeSubmission?    @relation(fields: [typeId], references: [id], onDelete: Cascade)
   user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   project          projectCode        @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
@@ -125,7 +127,7 @@ model Approval {
   submissionId String
   submission   submission        @relation(fields: [submissionId], references: [id], onDelete: Cascade)
   sequence     Int
-  requiredRole String 
+  requiredRole String
   status       String            @default("PENDING")
   approverId   String?
   approver     User?             @relation("UserApprovals", fields: [approverId], references: [id], onDelete: Cascade)

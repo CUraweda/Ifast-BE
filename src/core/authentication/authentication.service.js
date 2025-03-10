@@ -21,32 +21,41 @@ class AuthenticationService extends BaseService {
 
     const access_token = await generateAccessToken(user);
 
-    return { user: this.exclude(user, ['password']), token: access_token };
+    return { user: this.exclude(user, ['password', 'apiToken', 'isVerified']), token: access_token };
   };
 
   register = async (payload) => {
-    const verifyEmail = await this.db.user.findUnique({
-      where: { email: payload.email },
-    });
+    const { email, password, divisionId, roles, hirarkyId, ...others } =
+      payload;
 
-    if (verifyEmail) throw new Forbidden('Akun dengan email telah digunakan');
-    const hashedPassword = await hash(payload.password);
-    payload['password'] = hashedPassword;
-    const data = await this.db.user.create({
-      data: {
-        ...payload,
-      },
+    const existing = await this.db.user.findUnique({ where: { email } });
+    if (existing) throw new Forbidden('Akun dengan email telah digunakan');
+
+    const division = await this.db.division.findUnique({
+      where: { id: divisionId },
     });
+    if (!division) throw new NotFound('Division tidak ditemukan');
+
+   const data = await this.db.user.create({
+    data: {
+      email,
+      password: await hash(password, 10),
+      division: { connect: { id: divisionId } },
+      roles: roles ? { connect: roles.map(id => ({ id })) } : undefined,
+      hirarky: hirarkyId ? { connect: { id: hirarkyId } } : undefined,
+      ...others,
+    },
+  });
 
     return {
       data,
-      message: 'Akun anda berhasil terdaftar! Silahkan verifikasi email anda',
+      message: 'Akun berhasil terdaftar! Silahkan verifikasi akun anda',
     };
   };
 
   generateToken = async (id) => {
     const userData = await prisma.user.findFirst({
-      where: {id},
+      where: { id },
     });
     if (!userData.apiToken) {
       const apiToken = crypto.randomBytes(32).toString('hex');
@@ -55,7 +64,7 @@ class AuthenticationService extends BaseService {
         data: { apiToken },
       });
       return { apiToken: user.apiToken };
-    } else return {apiToken: userData.apiToken};
+    } else return { apiToken: userData.apiToken };
   };
 }
 

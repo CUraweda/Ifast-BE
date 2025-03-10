@@ -36,6 +36,25 @@ class UserController extends BaseController {
     const data = await this.#service.delete(req.params.id);
     return this.noContent(res, "User berhasil dihapus");
   });
+  addRoles = this.wrapper(async (req, res) => {
+    const data = await this.#service.addRoles(req.params.id, req.body.roles);
+    return this.ok(res, data, "Roles berhasil ditambahkan ke user");
+  });
+
+  removeRoles = this.wrapper(async (req, res) => {
+    const data = await this.#service.removeRoles(req.params.id, req.body.roles);
+    return this.ok(res, data, "Roles berhasil dihapus dari user");
+  });
+
+  updateHirarky = this.wrapper(async (req, res) => {
+    const data = await this.#service.assignHirarky(req.params.id, req.body.hirarkyId);
+    return this.ok(res, data, "Hirarky berhasil diassign ke user");
+  });
+
+  removeHirarky = this.wrapper(async (req, res) => {
+    const data = await this.#service.removeHirarky(req.params.id);
+    return this.ok(res, data, "Hirarky berhasil dihapus dari user");
+  });
 }
 
 export default UserController;
