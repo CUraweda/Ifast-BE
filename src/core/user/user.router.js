@@ -17,6 +17,7 @@ r.get(
 );
 
 r.get('/show-one/:id', controller.findById);
+r.get('/show-me', auth(), controller.findByUser);
 
 r.post(
   '/create',

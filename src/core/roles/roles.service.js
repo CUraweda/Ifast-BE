@@ -1,5 +1,5 @@
 import BaseService from "../../base/service.base.js";
-import prisma from '../config/prisma.db.js';
+import prisma from "../../config/prisma.db.js";
 
 class RolesService extends BaseService {
   constructor() {
@@ -16,6 +16,7 @@ class RolesService extends BaseService {
     }
     return data;
   };
+
 
   findById = async (id) => {
     const data = await this.db.roles.findUnique({ where: { id } });

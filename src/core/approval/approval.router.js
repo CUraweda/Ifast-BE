@@ -1,37 +1,18 @@
 import { Router } from "express";
 import validatorMiddleware from "../../middlewares/validator.middleware.js";
-import approvalController from "./approval.controller.js";
-import approvalValidator from "./approval.validator.js";
-import { baseValidator } from "../../base/validator.base.js";
+import ApprovalController from "./approval.controller.js";
+import ApprovalValidator from "./approval.validator.js";
 import auth from "../../middlewares/auth.middleware.js";
 
-const r = Router(),
-  validator = approvalValidator,
-  controller = new approvalController();
+const r = Router();
+const controller = new ApprovalController();
 
-r.get(
-  "/show-all",
-  validatorMiddleware({ query: baseValidator.browseQuery }),
-  controller.findAll
+// Endpoint untuk mengubah status approval
+r.put(
+  "/:id",
+  auth(), // Pastikan user telah login
+  validatorMiddleware({ body: ApprovalValidator.update }),
+  controller.updateApproval
 );
 
-r.get("/show-one/:id", controller.findById);
-
-r.post(
-  "/create",
-  auth(['ADMIN']),
-  validatorMiddleware({ body: validator.create }),
-  controller.create
-  );
-  
-  r.put(
-    "/update/:id",
-    auth(['ADMIN']),
-    validatorMiddleware({ body: validator.update }),
-    controller.update
-    );
-    
-r.delete("/delete/:id", auth(['ADMIN']), controller.delete);
-
-const approvalRouter = r;
-export default approvalRouter;
+export default r;

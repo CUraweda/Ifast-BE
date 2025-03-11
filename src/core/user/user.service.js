@@ -10,7 +10,8 @@ class UserService extends BaseService {
     const q = this.transformBrowseQuery(query);
     q.include = {
       roles: true,
-      hirarky: { include: { levels: true } }
+      hirarky: { include: { levels: true } },
+      division: true
     };
     const data = await this.db.user.findMany({ ...q });
 
@@ -22,12 +23,18 @@ class UserService extends BaseService {
       );
       return paginated;
     }
-    return  data
+    return data;
   };
 
   findById = async (id) => {
-    const data = await this.db.user.findUnique({ where: { id } });
-    return data;
+    const data = await this.db.user.findUnique({
+      where: { id },
+      include: {
+        roles: true,
+        hirarky: { include: { levels: true } },
+      },
+    });
+    return this.exclude(data, ['password', 'apiToken', 'isVerified']);
   };
 
   create = async (payload) => {
@@ -51,25 +58,25 @@ class UserService extends BaseService {
   addRoles = async (id, roleIds) =>
     await this.db.user.update({
       where: { id },
-      data: { roles: { connect: roleIds.map(r => ({ id: r })) } }
+      data: { roles: { connect: roleIds.map((r) => ({ id: r })) } },
     });
 
   removeRoles = async (id, roleIds) =>
     await this.db.user.update({
       where: { id },
-      data: { roles: { disconnect: roleIds.map(r => ({ id: r })) } }
+      data: { roles: { disconnect: roleIds.map((r) => ({ id: r })) } },
     });
 
   assignHirarky = async (id, hirarkyId) =>
     await this.db.user.update({
       where: { id },
-      data: { hirarky: { connect: { id: hirarkyId } } }
+      data: { hirarky: { connect: { id: hirarkyId } } },
     });
 
   removeHirarky = async (id) =>
     await this.db.user.update({
       where: { id },
-      data: { hirarky: { disconnect: true } }
+      data: { hirarky: { disconnect: true } },
     });
 }
 

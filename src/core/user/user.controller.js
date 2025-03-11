@@ -22,6 +22,13 @@ class UserController extends BaseController {
     return this.ok(res, data, "User berhasil didapatkan");
   });
 
+  findByUser = this.wrapper(async (req, res) => {
+    const data = await this.#service.findById(req.user.id);
+    if (!data) throw new NotFound("User tidak ditemukan");
+
+    return this.ok(res, data, "User berhasil didapatkan");
+  });
+
   create = this.wrapper(async (req, res) => {
     const data = await this.#service.create(req.body);
     return this.created(res, data, "User berhasil dibuat");

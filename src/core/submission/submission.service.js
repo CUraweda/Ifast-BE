@@ -1,5 +1,5 @@
 import BaseService from "../../base/service.base.js";
-import prisma from '../config/prisma.db.js';
+import prisma from "../../config/prisma.db.js";
 
 class SubmissionService extends BaseService {
   constructor() {
@@ -8,34 +8,68 @@ class SubmissionService extends BaseService {
 
   findAll = async (query) => {
     const q = this.transformBrowseQuery(query);
+    // Sertakan relasi approval sehingga status approval ikut diambil
+    q.include = { approval: true };
     const data = await this.db.submission.findMany({ ...q });
-
+    
     if (query.paginate) {
       const countData = await this.db.submission.count({ where: q.where });
       return this.paginate(data, countData, q);
     }
     return data;
   };
-
+  
   findById = async (id) => {
-    const data = await this.db.submission.findUnique({ where: { id } });
-    return data;
+    return await this.db.submission.findUnique({
+      where: { id },
+      include: { approval: true },
+    });
   };
+  
 
   create = async (payload) => {
-    const data = await this.db.submission.create({ data: payload });
-    return data;
+    // Pastikan payload sudah mengandung userId dari controller
+    return await this.db.$transaction(async (tx) => {
+      const user = await tx.user.findUnique({
+        where: { id: payload.userId },
+        include: { hirarky: { include: { levels: true } } },
+      });
+    
+      const submission = await tx.submission.create({
+        data: payload,
+      });
+
+      const type = await tx.typeSubmission.findFirst({
+        where: {id: payload.typeId}
+      })
+      if (!type) throw new NotFound('type tidak ditemukan');
+
+      // Jika user memiliki konfigurasi hirarky, buat approval otomatis untuk tiap level
+      if (user && user.hirarky && user.hirarky.levels.length) {
+     
+        for (const level of user.hirarky.levels) {
+          await tx.approval.create({
+            data: {
+              submissionId: submission.id,
+              sequence: level.sequence,
+              requiredRole: level.requiredRole,
+              status: "PENDING",
+              approverId: level.approverId,
+            },
+          });
+        }
+      }
+      return submission;
+    });
   };
 
   update = async (id, payload) => {
-    const data = await this.db.submission.update({ where: { id }, data: payload });
-    return data;
+    return await this.db.submission.update({ where: { id }, data: payload });
   };
 
   delete = async (id) => {
-    const data = await this.db.submission.delete({ where: { id } });
-    return data;
+    return await this.db.submission.delete({ where: { id } });
   };
 }
 
-export default SubmissionService;  
+export default SubmissionService;

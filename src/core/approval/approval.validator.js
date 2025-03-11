@@ -1,12 +1,13 @@
 import Joi from "joi";
 
-export const approvalValidator = {
-  create: Joi.object({
-    // no-data
-  }),
+export const ApprovalValidator = {
   update: Joi.object({
-    // no-data
+    status: Joi.string().valid("APPROVED", "REJECTED").required().messages({
+      "any.only": "Status harus APPROVED atau REJECTED",
+      "any.required": "Status approval wajib diisi",
+    }),
+    comment: Joi.string().optional(),
   }),
 };
 
-export default approvalValidator;
+export default ApprovalValidator;

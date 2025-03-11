@@ -10,6 +10,7 @@ const controller = new hirarkyController();
 
 r.get(
   "/show-all",
+  auth(["ADMIN"]),
   validatorMiddleware({ query: baseValidator.browseQuery }),
   controller.findAll
 );

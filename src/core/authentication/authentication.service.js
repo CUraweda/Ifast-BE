@@ -1,5 +1,5 @@
 import BaseService from '../../base/service.base.js';
-import { Forbidden } from '../../exceptions/catch.execption.js';
+import { Forbidden, NotFound } from '../../exceptions/catch.execption.js';
 import { compare, hash } from '../../helpers/bcrypt.helper.js';
 import { generateAccessToken } from '../../helpers/jwt.helper.js';
 import prisma from '../../config/prisma.db.js';

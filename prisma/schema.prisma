@@ -15,7 +15,7 @@ model User {
   phoneWA    String?
   nik        Int
   signature  String?
-  status     Boolean? @default(true)
+  status     Boolean?  @default(true)
   apiToken   String?   @unique
   isVerified Boolean   @default(false)
   createdAt  DateTime? @default(now())
@@ -44,10 +44,11 @@ model BankAccount {
 }
 
 model Roles {
-  id        String    @id @default(uuid())
-  name      String
-  code      String    @unique
-  createdAt DateTime? @default(now())
+  id          String    @id @default(uuid())
+  name        String
+  code        String    @unique
+  description String?
+  createdAt   DateTime? @default(now())
 
   users User[]
 }
