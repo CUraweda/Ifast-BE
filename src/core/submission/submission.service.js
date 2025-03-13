@@ -1,5 +1,5 @@
-import BaseService from "../../base/service.base.js";
-import prisma from "../../config/prisma.db.js";
+import BaseService from '../../base/service.base.js';
+import prisma from '../../config/prisma.db.js';
 
 class SubmissionService extends BaseService {
   constructor() {
@@ -8,24 +8,52 @@ class SubmissionService extends BaseService {
 
   findAll = async (query) => {
     const q = this.transformBrowseQuery(query);
-    // Sertakan relasi approval sehingga status approval ikut diambil
-    q.include = { approval: true };
+    q.include = {
+      approval: { orderBy: { sequence: "asc" } },
+      type: true,
+      submissionDetail: true,
+    };
+  
     const data = await this.db.submission.findMany({ ...q });
-    
+  
+    const transformed = data.map((submission) => {
+      const totalAmount = submission.submissionDetail.reduce(
+        (sum, detail) => sum + detail.amount,
+        0
+      );
+  
+      const approvals = submission.approval || [];
+      let displayApproval;
+  
+      if (approvals.length) {
+        displayApproval = approvals.find(
+          (a) => a.status === "CHECKED" || a.status === "REJECT"
+        );
+        if (!displayApproval) {
+          displayApproval = approvals[approvals.length - 1];
+        }
+      }
+      return {
+        ...submission,
+        totalAmount,
+        approval: displayApproval ? [displayApproval] : [],
+      };
+    });
+  
     if (query.paginate) {
       const countData = await this.db.submission.count({ where: q.where });
-      return this.paginate(data, countData, q);
+      return this.paginate(transformed, countData, q);
     }
-    return data;
+    return transformed;
   };
   
+
   findById = async (id) => {
     return await this.db.submission.findUnique({
       where: { id },
       include: { approval: true },
     });
   };
-  
 
   create = async (payload) => {
     // Pastikan payload sudah mengandung userId dari controller
@@ -34,26 +62,30 @@ class SubmissionService extends BaseService {
         where: { id: payload.userId },
         include: { hirarky: { include: { levels: true } } },
       });
-    
-      const submission = await tx.submission.create({
-        data: payload,
-      });
 
       const type = await tx.typeSubmission.findFirst({
-        where: {id: payload.typeId}
-      })
+        where: { id: payload.typeId },
+      });
       if (!type) throw new NotFound('type tidak ditemukan');
+      const submissions = await this.db.submission.count({
+        where: {
+          typeId: type.id,
+        },
+      });
+      const date = new Date();
+      const number = `${type.code}.RUM-${date.getFullYear()}-${submissions + 1}`;
+      const submission = await tx.submission.create({
+        data: {...payload, number, status: "CHECKED"},
+      });
 
-      // Jika user memiliki konfigurasi hirarky, buat approval otomatis untuk tiap level
       if (user && user.hirarky && user.hirarky.levels.length) {
-     
         for (const level of user.hirarky.levels) {
           await tx.approval.create({
             data: {
               submissionId: submission.id,
               sequence: level.sequence,
               requiredRole: level.requiredRole,
-              status: "PENDING",
+              status: 'PENDING',
               approverId: level.approverId,
             },
           });

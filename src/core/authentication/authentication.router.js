@@ -17,6 +17,12 @@ r.post(
 );
 
 r.post(
+  '/refresh',
+  validatorMiddleware({ body: validator.refresh }),
+  controller.refresh
+);
+
+r.post(
   '/register',
   validatorMiddleware({ body: validator.register }),
   controller.register

@@ -8,7 +8,15 @@ class hirarkyService extends BaseService {
 
   findAll = async (query) => {
     const q = this.transformBrowseQuery(query);
-    q.include = { levels: true };
+    q.include = {
+      levels: {
+        include: {
+          approver: {
+            select: { id: true, fullName: true }
+          }
+        }
+      }
+    };
     const data = await this.db.hirarky.findMany({ ...q });
     if (query.paginate) {
       const countData = await this.db.hirarky.count({ where: q.where });

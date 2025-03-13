@@ -8,6 +8,10 @@ const AuthenticationValidator = {
     password: Joi.string().max(constant.MAX_LEN_PW).required(),
   }),
 
+  refresh: Joi.object({
+    refresh_token: Joi.string().required(),
+  }),
+
   register: Joi.object({
     email: Joi.string().email().required(),
     fullName: Joi.string().required(),

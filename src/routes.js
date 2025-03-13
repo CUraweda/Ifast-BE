@@ -8,6 +8,7 @@ import submissionRouter from './core/submission/submission.router.js';
 import submissionDetailRouter from './core/submissiondetail/submissiondetail.router.js';
 import divisionRouter from './core/division/division.router.js';
 import rolesRouter from './core/roles/roles.router.js';
+import typeRouter from './core/typesubmission/typesubmission.router.js';
 
 export const routeLists = [
     {
@@ -41,6 +42,10 @@ export const routeLists = [
     {
         path : '/roles',
         route: rolesRouter
+    },
+    {
+        path : '/type',
+        route: typeRouter
     }
 ]
 
