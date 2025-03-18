@@ -7,7 +7,7 @@ import path from 'path';
 import http from 'http';
 
 import { Server } from 'socket.io';
-import { startWhatsApp } from './utils/whatsappClient.js';
+import { startWhatsApp } from '../whatsappClient.js';
 import router from './routes.js';
 import handleError from './exceptions/handler.exception.js';
 

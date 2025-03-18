@@ -12,9 +12,10 @@ class SubmissionService extends BaseService {
       approval: { orderBy: { sequence: "asc" } },
       type: true,
       submissionDetail: true,
+    
     };
   
-    const data = await this.db.submission.findMany({ ...q });
+    const data = await this.db.submission.findMany({ ...q , orderBy: {createdAt: "desc"}});
   
     const transformed = data.map((submission) => {
       const totalAmount = submission.submissionDetail.reduce(
@@ -51,7 +52,7 @@ class SubmissionService extends BaseService {
   findById = async (id) => {
     return await this.db.submission.findUnique({
       where: { id },
-      include: { approval: true },
+      include: { approval: true , project: true , type: true},
     });
   };
 
@@ -73,9 +74,9 @@ class SubmissionService extends BaseService {
         },
       });
       const date = new Date();
-      const number = `${type.code}.RUM-${date.getFullYear()}-${submissions + 1}`;
+      const number = `${type.code}-${date.getFullYear()}-${submissions + 1}`;
       const submission = await tx.submission.create({
-        data: {...payload, number, status: "CHECKED"},
+        data: {...payload, number},
       });
 
       if (user && user.hirarky && user.hirarky.levels.length) {
@@ -85,7 +86,7 @@ class SubmissionService extends BaseService {
               submissionId: submission.id,
               sequence: level.sequence,
               requiredRole: level.requiredRole,
-              status: 'PENDING',
+              status: 'CHECKED',
               approverId: level.approverId,
             },
           });

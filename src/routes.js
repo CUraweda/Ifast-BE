@@ -9,6 +9,7 @@ import submissionDetailRouter from './core/submissiondetail/submissiondetail.rou
 import divisionRouter from './core/division/division.router.js';
 import rolesRouter from './core/roles/roles.router.js';
 import typeRouter from './core/typesubmission/typesubmission.router.js';
+import projectRouter from './core/projectcode/projectcode.router.js';
 
 export const routeLists = [
     {
@@ -46,6 +47,10 @@ export const routeLists = [
     {
         path : '/type',
         route: typeRouter
+    },
+    {
+        path : '/project',
+        route: projectRouter
     }
 ]
 

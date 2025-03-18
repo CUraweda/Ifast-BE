@@ -1,8 +1,10 @@
-import Joi from "joi";
+import Joi from 'joi';
 
 export const projectCodeValidator = {
   create: Joi.object({
-    // no-data
+    name: Joi.string().required(),
+    code: Joi.string().required(),
+    description: Joi.string().required(),
   }),
   update: Joi.object({
     // no-data

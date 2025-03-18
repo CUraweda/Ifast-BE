@@ -16,7 +16,7 @@ r.get(
   controller.findAll
 );
 
-r.get("/show-one/:id", controller.findById);
+r.get("/show-one/:id", auth(), controller.findById);
 
 r.post(
   "/create",
