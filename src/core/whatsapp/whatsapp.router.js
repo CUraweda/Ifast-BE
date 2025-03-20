@@ -16,7 +16,7 @@ r.get('/status', auth(), controller.status);
 
 r.post(
   '/send-message',
-  authWa(),
+  
   validatorMiddleware({ body: validator.sendMessage }),
   controller.sendMessage
 );

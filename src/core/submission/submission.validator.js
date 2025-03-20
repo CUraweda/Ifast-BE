@@ -31,7 +31,6 @@ export const SubmissionValidator = {
 
   update: Joi.object({
     userId: Joi.string().optional(),
-    number: Joi.string().optional(),
     projectId: Joi.string().optional(),
     date: Joi.date().optional(),
     activity: Joi.string().optional(),

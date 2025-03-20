@@ -27,7 +27,7 @@ r.post(
   
   r.put(
     "/update/:id",
-    auth(['ADMIN']),
+    auth(),
     validatorMiddleware({ body: validator.update }),
     controller.update
     );

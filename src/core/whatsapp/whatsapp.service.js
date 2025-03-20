@@ -3,7 +3,7 @@ import { formatPhoneNumber } from '../../helpers/phoneNumber.js';
 import {
   getWhatsappClient,
   getWhatsappQR,
-} from '../../../whatsappClient.js';
+} from '../../utils/whatsappClient.js';
 import prism from '../../config/prisma.db.js';
 import fs from 'fs';
 

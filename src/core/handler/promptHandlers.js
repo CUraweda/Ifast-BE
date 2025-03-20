@@ -24,11 +24,17 @@ export const promptHandlers = {
 
 export const fallbackMessage = async (msg) => {
   const client = getWhatsappClient();
+  if (!client) {
+    console.error("WhatsApp client belum terhubung. Pesan fallback dibatalkan.");
+    return;
+  }
   const jid = msg.key.remoteJid;
-  await client.sendMessage(jid, {
-    text: promptData.fallback
-  });
+  await client.sendMessage(jid, { text: promptData.fallback });
+  console.log("Fallback response sent");
 };
+
+
+
 
 export const handlePromptCommand = async (prompt, msg) => {
   const lowerPrompt = prompt.toLowerCase();

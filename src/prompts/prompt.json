@@ -9,7 +9,8 @@
   },
   "ifast": {
     "pengajuan": "Perintah pengajuan Ifast sedang diproses.",
-    "rekap": "Perintah rekap Ifast sedang diproses."
+    "rekap": "Perintah rekap Ifast sedang diproses.",
+    "permohonan": "Permohonan Sedang Di proses"
   },
   "fallback": "Saya tidak mengerti apa maksud anda, bisa di detailkan lagi perintahnya? atau gunakan perintah *Help* untuk bantuan",
   "general_query": "Saya dapat membantu Anda dengan mengirim pesan, mengatur pengajuan, menyediakan informasi, dan banyak lagi. Silakan ketik *Help* untuk info lebih lanjut."

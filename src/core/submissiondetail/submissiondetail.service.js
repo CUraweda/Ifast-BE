@@ -22,7 +22,11 @@ class SubmissionDetailService extends BaseService {
     return data;
   };
 
-  create = async (payload) => {
+
+  create = async (payload, files) => {
+    if (files && files.evidence && files.evidence.length > 0) {
+      payload.evidence = files.evidence[0].path;
+    }
     const data = await this.db.submissionDetail.create({ data: payload });
     return data;
   };

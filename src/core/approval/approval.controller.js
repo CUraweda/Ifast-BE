@@ -5,9 +5,8 @@ class ApprovalController extends BaseController {
   #service = new ApprovalService();
 
   updateApproval = this.wrapper(async (req, res) => {
-    const { id } = req.params; // approval ID
+    const { id } = req.params; 
     const { status, comment } = req.body;
-    // Gunakan req.user.id sebagai approverId
     const data = await this.#service.updateApprovalStatus(id, status, comment, req.user.id);
     return this.ok(res, data, "Approval berhasil diperbarui");
   });

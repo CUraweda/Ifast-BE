@@ -8,18 +8,16 @@ export const IncomingMessages = async (messageUpdate) => {
   const messages = messageUpdate.messages || [];
   if (messages.length === 0) return;
 
-  // Ambil remoteJid dari pesan pertama untuk validasi pengguna
   const jid = messages[0].key.remoteJid;
   const phoneNumber = jid.split('@')[0];
-  const user = await prism.listUser.findUnique({ where: { whatsapp: phoneNumber } });
+  const user = await prism.user.findFirst({ where: { phoneWA: phoneNumber } });
   if (!user) return;
-  
 
   for (const msg of messages) {
     if (!msg.key.fromMe && !msg.broadcast && !isGroupMessage(msg)) {
-      if (user.blackList){
+      if (!user.isVerified){
         const client = getWhatsappClient();
-        await client.sendMessage(jid, { text: `halo ${user.name}, maaf ya kamu tidak diperbolehkan lagi untuk chat dengan MIRA` });
+        await client.sendMessage(jid, { text: `halo ${user.fullName}, maaf ya kamu belum terverifikasi, silakan verifikasi akun kamu terlebih dahulu ya` });
         return
       }
       const text = extractMessageText(msg);
@@ -35,12 +33,17 @@ export const IncomingMessages = async (messageUpdate) => {
 };
 
 const extractMessageText = (msg) => {
+ 
   if (msg.message?.conversation) {
     return msg.message.conversation;
   }
   if (msg.message?.extendedTextMessage?.text) {
-    return msg.message.extendedTextMessage.text;
+    const quoted = msg.message.extendedTextMessage.contextInfo?.quotedMessage;
+    const contextText = quoted?.conversation || '';
+    const prompt = `${contextText} [${msg.message.extendedTextMessage.text}]`
+    return prompt
   }
+  
   if (msg.message?.imageMessage?.caption) {
     return msg.message.imageMessage.caption;
   }
@@ -48,7 +51,6 @@ const extractMessageText = (msg) => {
 };
 
 const containsTrigger = (text) => {
-  // Ambil daftar trigger dari promptMapping (menggunakan key-nya)
   const triggers = Object.keys(promptMapping);
   return triggers.some((trigger) =>
     text.toLowerCase().includes(trigger.toLowerCase())

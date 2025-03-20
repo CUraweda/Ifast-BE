@@ -3,13 +3,15 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import httpStatus from 'http-status-codes';
+import fs from "fs";
 import path from 'path';
 import http from 'http';
 
 import { Server } from 'socket.io';
-import { startWhatsApp } from '../whatsappClient.js';
+import { startWhatsApp } from '../src/utils/whatsappClient.js';
 import router from './routes.js';
 import handleError from './exceptions/handler.exception.js';
+import auth from './middlewares/auth.middleware.js';
 
 const app = express();
 dotenv.config();
@@ -43,6 +45,38 @@ app.use(
 app.use(bodyParser.text({ type: 'text/html' }));
 
 app.use('/api/v1', router);
+
+app.get('/api/download', (req, res, next) => {
+  const filePath = req.query.path;
+  if (!filePath) {
+    return res.status(httpStatus.BAD_REQUEST).json({
+      status: false,
+      code: httpStatus.BAD_REQUEST,
+      message: "File path not provided.",
+    });
+  }
+
+  // Ubah path relatif menjadi absolute
+  const resolvedPath = path.resolve(filePath);
+
+  // Periksa apakah file ada secara asinkron
+  fs.access(resolvedPath, fs.constants.F_OK, (err) => {
+    if (err) {
+      return res.status(httpStatus.NOT_FOUND).json({
+        status: false,
+        code: httpStatus.NOT_FOUND,
+        message: "File not found.",
+      });
+    }
+    // Kirim file secara langsung tanpa pipe
+    res.sendFile(resolvedPath, (err) => {
+      if (err) {
+        console.error("Error sending file:", err);
+        return next(err);
+      }
+    });
+  });
+});
 
 app.route('/').get((req, res) => {
   return res.json({
@@ -80,11 +114,11 @@ io.on('connection', (socket) => {
   });
 });
 
-// startWhatsApp(io)
-//   .then(() => {
-//     console.log('WhatsApp client started');
-//   })
-//   .catch((err) => console.error(err));
+startWhatsApp(io)
+  .then(() => {
+    console.log('WhatsApp client started');
+  })
+  .catch((err) => console.error(err));
 
 server.listen(port, () => {
   console.log(`Server berjalan pada port ${port}`);

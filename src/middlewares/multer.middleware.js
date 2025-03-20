@@ -115,31 +115,5 @@ const uploadPublic = (
   });
 };
 
-/**
- * Creates a multer uploader to public middleware with the given options.
- * @param {string} uploadPath
- * @param {'image' | 'file' | 'video' | '*'} fileType
- * @param {number} [limitSize=Setting.defaultLimitSize]
- * @returns {multer.Multer}
- */
-const uploadSingle = (
-  uploadPath = '/others',
-  fileType = 'image',
-  context = 'RNDM',
-  limitSize = Setting.defaultLimitSize
-) => {
-  const storage = createStorage('./upload', uploadPath, context);
-  const fileFilter = createFilter(fileType);
-
-  return multer({
-    storage,
-    fileFilter,
-    limits: { fileSize: limitSize },
-  });
-};
-
-
-
 export default uploader;
 export { uploadPublic };
-export { uploadSingle };

@@ -23,7 +23,7 @@ class SubmissionDetailController extends BaseController {
   });
 
   create = this.wrapper(async (req, res) => {
-    const data = await this.#service.create(req.body);
+    const data = await this.#service.create(req.body, req.files);
     return this.created(res, data, "SubmissionDetail berhasil dibuat");
   });
 

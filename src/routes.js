@@ -10,6 +10,8 @@ import divisionRouter from './core/division/division.router.js';
 import rolesRouter from './core/roles/roles.router.js';
 import typeRouter from './core/typesubmission/typesubmission.router.js';
 import projectRouter from './core/projectcode/projectcode.router.js';
+import categorySubmission from './core/categorysubmission/categorysubmission.router.js';
+import approverRouter from './core/approval/approval.router.js'
 
 export const routeLists = [
     {
@@ -37,6 +39,10 @@ export const routeLists = [
         route: submissionDetailRouter
     },
     {
+        path : '/category-submission',
+        route: categorySubmission
+    },
+    {
         path : '/division',
         route: divisionRouter
     },
@@ -51,6 +57,10 @@ export const routeLists = [
     {
         path : '/project',
         route: projectRouter
+    },
+    {
+        path : '/approval',
+        route: approverRouter
     }
 ]
 
