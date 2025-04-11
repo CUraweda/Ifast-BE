@@ -33,9 +33,6 @@ export const fallbackMessage = async (msg) => {
   console.log("Fallback response sent");
 };
 
-
-
-
 export const handlePromptCommand = async (prompt, msg) => {
   const lowerPrompt = prompt.toLowerCase();
   let handled = false;

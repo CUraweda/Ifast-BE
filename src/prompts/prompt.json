@@ -1,10 +1,10 @@
 {
   "general": {
     "prompt": "Anda memicu command PROMPT dengan: ",
-    "help": "Ini adalah bantuan. Silakan gunakan command yang tepat.",
+    "help": "apa da yang bisa saya bantu?",
     "execute": "Anda menjalankan perintah EXECUTE. Memproses...",
     "command": "Anda memicu COMMAND.",
-    "kenalan" : "hallo, perkenalkan nama saya *MIRA* saya adalah Virtual Asisten dengan kecerdasan buatan yang dikembangan oleh Top Engineer Nur Cahyanto ☺️",
+    "kenalan" : "hallo, perkenalkan saya *MIRA* _(Multifunction Intelligent Response Assistant)_ saya adalah Virtual Asisten dengan kecerdasan buatan yang dikembangan oleh Curaweda",
     "blacklist": ""
   },
   "ifast": {

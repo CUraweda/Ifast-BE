@@ -25,7 +25,7 @@ export const handleIfast = async (prompt, msg) => {
 
   if (!found) {
     await client.sendMessage(jid, { 
-      text: `Modul Ifast: perintah tidak dikenali. Silakan periksa perintah Anda.` 
+      text: `perintah tidak dikenali. Silakan periksa perintah Anda.` 
     });
   }
 };

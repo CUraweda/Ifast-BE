@@ -40,8 +40,6 @@ export const ApprovalIfast = async (prompt, jid) => {
       (approval) => approval.status !== 'APPROVED'
     );
 
-    console.log(jid);
-
     if (!displayApproval) {
       await client.sendMessage(jid, {
         text: `permohonan nomor ${submission.number} telah selesai di approval, terimakasih ☺️`,
@@ -81,6 +79,7 @@ export const ApprovalIfast = async (prompt, jid) => {
       });
       await handleSendNextApprove(submission.id);
     }
+    
   } catch (error) {
     console.error('Error in ifastModule.permohonan:', error);
     throw error;
