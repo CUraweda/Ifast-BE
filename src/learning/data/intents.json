@@ -1,0 +1,21 @@
+[
+    {
+      "tag": "help",
+      "patterns": ["help", "tolong bantu", "butuh bantuan", "bisa bantu saya?", "ada bantuan?"],
+      "handler": "handleHelp",
+      "responses": ["Berikut bantuan yang tersedia:\n1. Kenalan\n2. Ajukan iFast\n3. Tanya lainnya"]
+    },
+    {
+      "tag": "kenalan",
+      "patterns": ["kenalan dong", "kamu siapa", "siapa kamu", "perkenalkan dirimu", "kenalan yuk"],
+      "handler": "handleKenalan",
+      "responses": ["Halo, saya adalah bot otomatis dari Curaweda 🤖 Siap membantu kamu kapan pun!"]
+    },
+    {
+      "tag": "ifast",
+      "patterns": ["ajukan ifast", "laporan perjalanan", "input pengajuan ifast", "buat laporan", "ajukan perjalanan"],
+      "handler": "handleIfast",
+      "responses": []
+    }
+  ]
+  

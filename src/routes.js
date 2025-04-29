@@ -12,6 +12,7 @@ import typeRouter from './core/typesubmission/typesubmission.router.js';
 import projectRouter from './core/projectcode/projectcode.router.js';
 import categorySubmission from './core/categorysubmission/categorysubmission.router.js';
 import approverRouter from './core/approval/approval.router.js'
+import permissionRouter from './core/permission/permission.router.js'
 
 export const routeLists = [
     {
@@ -61,6 +62,10 @@ export const routeLists = [
     {
         path : '/approval',
         route: approverRouter
+    },
+    {
+        path : '/permission',
+        route: permissionRouter
     }
 ]
 

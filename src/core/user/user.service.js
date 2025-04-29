@@ -30,10 +30,12 @@ class UserService extends BaseService {
     const data = await this.db.user.findUnique({
       where: { id },
       include: {
-        roles: true,
+        roles: { include: { permission: true } },
         hirarky: { include: { levels: true } },
-      },
+       
+      },  
     });
+    if (!data) throw new NotFound('User tidak ditemukan');
     return this.exclude(data, ['password', 'apiToken', 'isVerified']);
   };
 

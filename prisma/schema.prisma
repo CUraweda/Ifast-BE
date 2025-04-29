@@ -12,7 +12,7 @@ model User {
   fullName   String?
   email      String    @unique
   password   String
-  phoneWA    String? 
+  phoneWA    String?
   nik        Int
   signature  String?
   status     Boolean?  @default(true)
@@ -50,7 +50,26 @@ model Roles {
   description String?
   createdAt   DateTime? @default(now())
 
-  users User[]
+  users            User[]
+  role_permissions RolePermissions[]
+}
+
+model Permissions {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  created_at  DateTime @default(now())
+
+  rolePermissions RolePermissions[]
+}
+
+model RolePermissions {
+  id            String      @id @default(uuid())
+  role_id       String
+  permission_id String
+  roles         Roles       @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  permissions   Permissions @relation(fields: [permission_id], references: [id], onDelete: Cascade)
+  created_at    DateTime    @default(now())
 }
 
 model Division {

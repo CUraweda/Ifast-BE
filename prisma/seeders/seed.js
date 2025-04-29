@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 
 import { seedDivisions } from './divisionSeeder.js';
 import { seedRoles } from './roleSeeder.js';
+import { seedPermissions } from './permissionSeeder.js';
 import { seedUsers } from './userSeeder.js';
 import { seedBankAccounts } from './bankAccountSeeder.js';
 import { seedProjects } from './projectSeeder.js';
@@ -17,6 +18,7 @@ async function main() {
 
     const { divisionA, divisionB } = await seedDivisions();
     const roles = await seedRoles();
+    await seedPermissions();
     const { user1, user2 } = await seedUsers(divisionA, divisionB, roles);
     await seedBankAccounts(user1, user2);
     const { projectAlpha } = await seedProjects();

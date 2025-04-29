@@ -1,5 +1,5 @@
 import { getWhatsappClient } from '../../utils/whatsappClient.js';
-import { ifastModule } from '../modul/ifast/ifast.agregator.js';
+import { ifastModule } from '../../core/modul/ifast/ifast.agregator.js';
 import { loadPromptData } from '../../prompts/index.js'; 
 
 const promptData = loadPromptData();
